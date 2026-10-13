@@ -1,0 +1,248 @@
+# Assignment 2.2: Linux Lab Notes
+
+## 1. Final Directory Tree
+
+The final project structure is:
+
+```text
+server-config/
+├── config/
+│   ├── server.conf
+│   └── network-settings.conf
+├── logs/
+│   ├── server.log
+│   └── backup-notes.txt
+├── backups/
+│   └── server.conf.bak
+├── scripts/
+│   └── health-check.sh
+```
+
+The `config` directory stores configuration files, `logs` stores log and backup-status notes, `backups` stores the configuration backup, `scripts` contains a script placeholder, and `docs` contains this report.
+
+The temporary directory was removed after its contents were inspected and deleted.
+
+## 2. Commands Used and Their Functions
+
+| Command | What it did |
+|---|---|
+| `pwd` | Displayed the current working directory. |
+| `ls` | Listed the files and directories in the current directory. |
+| `cd` | Changed the current working directory. |
+| `mkdir` | Created the project directories. |
+| `touch` | Created empty placeholder files. |
+| `echo` | Printed text to the terminal or, with redirection, wrote text to files. |
+| `cat` | Displayed the contents of files. |
+| `cp` | Copied `server.conf` into the backups directory. |
+| `mv` | Renamed `network.conf` and moved `backup-notes.txt`. |
+| `rm` | Deleted the temporary test file. |
+| `rmdir` | Removed the temporary directory after it became empty. |
+
+rmdir was not on the list of allowed commands in the assignment! But I instinctively used it because the temp directory I created was empty. 
+
+### Important command examples
+
+**Creating directories:**
+
+```bash
+mkdir config logs backups scripts temp
+```
+
+This created five directories inside `server-config`.
+
+**Creating files:**
+
+```bash
+touch config/server.conf
+touch config/network.conf
+touch logs/server.log
+touch backups/backup-notes.txt
+touch scripts/health-check.sh
+touch temp/test-file.txt
+```
+
+`touch` created empty files at the specified paths.
+
+**Writing file contents:**
+
+```bash
+echo "server_name=lab_server" > config/server.conf
+echo "interface=eth0" > config/network.conf
+echo "Server started successfully" > logs/server.log
+echo "Backup Status: Pending" > backups/backup-notes.txt
+echo '#!/bin/bash' > scripts/health-check.sh
+echo "Temporary Test File" > temp/test-file.txt
+```
+
+The `>` operator redirected output into a file, creating it if necessary and replacing its previous contents if it already existed. Single quotes around `#!/bin/bash` prevented Bash history expansion of the exclamation mark.
+
+**Creating a backup:**
+
+```bash
+cp config/server.conf backups/server.conf
+```
+
+This created a separate copy of `server.conf`. 
+
+**Renaming a file:**
+
+```bash
+mv config/network.conf config/network-settings.conf
+```
+
+This changed the filename while keeping the file in the same directory.
+
+**Moving a file:**
+
+```bash
+mv backups/backup-notes.txt logs/backup-notes.txt
+```
+
+This moved the file from `backups` to `logs` without changing its filename.
+
+**Deleting the temporary directory:**
+
+```bash
+rm temp/test-file.txt
+rmdir temp
+```
+
+The file was removed first, leaving the directory empty. `rmdir` then removed the empty directory.
+
+## 43. Review Questions and Answers
+
+### Question 1: What is the difference between `touch file.txt` and `touch /tmp/file.txt`?
+
+`touch file.txt` uses a relative path, so the file is created in the current working directory. `touch /tmp/file.txt` uses an absolute path, so the file is created in `/tmp`, regardless of the current working directory.
+
+Both commands also update the file's timestamps if the specified file already exists.
+
+### Question 2: What happens if you run `cp source.txt destination.txt` and `destination.txt` already exists?
+
+If the operation is permitted, `cp` overwrites the contents of `destination.txt` with the contents of `source.txt`. The previous contents of the destination are lost.
+
+Using `cp -i source.txt destination.txt` requests confirmation before overwriting the existing file.
+
+### Question 3: What is the difference between `cp directory backup` and `cp -r directory backup`?
+
+The ordinary `cp` command does not copy directories and reports an error when given a directory as its source.
+
+The `-r` option enables recursive copying, allowing `cp -r` to copy a directory and its contents, including subdirectories. The resulting layout depends on whether the destination already exists and whether it is a directory.
+
+### Question 4: What is the difference between `mv file.txt new.txt` and `mv file.txt documents/`?
+
+`mv file.txt new.txt` renames the file to `new.txt` in the current directory.
+
+`mv file.txt documents/` moves the file into the `documents` directory while preserving its name, provided `documents/` is an existing directory.
+
+Both operations use `mv`, but the destination determines whether the operation is a rename or a move.
+
+### Question 5: Why does `rm directory` fail, even when the directory is empty?
+
+By default, `rm` removes files rather than directories. It reports an error when asked to remove a directory without the appropriate option.
+
+An empty directory can be removed using `rmdir directory`. Alternatively, `rm -r directory` can remove the directory recursively.
+
+### Question 6: What does `-r` mean in `cp -r` and `rm -r`? Is it conceptually the same?
+
+In both commands, `-r` means recursive. It allows the command to process a directory and its contents, including nested directories.
+
+The concept is the same, but the operations differ: `cp -r` copies directory contents, while `rm -r` deletes them.
+
+### Question 7: What does `-i` protect you from, and what does it not protect you from?
+
+The `-i` option requests confirmation before certain potentially destructive operations. For example, `cp -i` asks before overwriting an existing destination file, while `rm -i` asks before removing a file.
+
+It helps prevent accidental overwrites and deletions by allowing the user to reconsider. However, it does not guarantee safety. Confirming the prompt, using commands without `-i`, or selecting the wrong target can still result in data loss.
+
+### Question 8: Why is `rm *.txt` different from `rm * .txt`?
+
+The shell expands wildcards before passing arguments to the command.
+
+- `rm *.txt` attempts to remove entries in the current directory whose names match `*.txt`.
+- `rm * .txt` passes two separate arguments: the entries matched by `*` and a separate filename, `.txt`.
+
+The space changes the meaning of the command. The second command may attempt to remove multiple unrelated entries and report an error if `.txt` does not exist.
+
+The wildcard `*` matches names in the current directory, including directory names. It does not normally match hidden names beginning with a dot.
+
+## 4. Mistakes, Diagnosis, and Fixes
+
+### Mistake 1: Typing the wrong command
+
+**Command attempted:**
+
+```bash
+toucb backups/backup-notes.txt
+```
+
+**Error:** The terminal reported that `toucb` was not found and suggested the `touch` command.
+
+**Diagnosis:** The command name was misspelled.
+
+**Fix:**
+
+```bash
+touch backups/backup-notes.txt
+```
+
+The corrected command created the file successfully.
+
+**Lesson learned:** When a command is not found, check its spelling before assuming the software is missing.
+
+### Mistake 2: Bash history expansion when writing a shebang
+
+**Command attempted:**
+
+```bash
+echo "*!/bin/bash" > scripts/health-check.sh
+```
+
+**Error:** Bash returned `event not found`.
+
+**Diagnosis:** The exclamation mark triggered Bash history expansion instead of being treated as ordinary text.
+
+**Fix:**
+
+```bash
+echo '#!/bin/bash' > scripts/health-check.sh
+```
+
+Single quotes preserved the text literally.
+
+**Lesson learned:** Shell quoting affects how special characters are interpreted. The shebang identifies the intended interpreter, but the file still needs commands to become a working script.
+
+### Mistake 3: Passing an unintended filename to `cat`
+
+**Command attempted:**
+
+```bash
+cat touch logs/server.log
+```
+
+**Error:** The log contents were displayed, but the terminal also reported `cat: touch: No such file or directory`.
+
+**Diagnosis:** `cat` interpreted `touch` and `logs/server.log` as two separate filenames. It attempted to read both.
+
+**Fix:**
+
+```bash
+cat logs/server.log
+```
+
+This displayed only the intended file.
+
+**Lesson learned:** Spaces separate command arguments. When an error mentions an unexpected filename, check the command and its arguments.
+
+## 5. Why `rm -rf` and Wildcards Require Caution
+
+The command `rm -rf` combines two options:
+
+- `-r` enables recursive removal of directories and their contents.
+- `-f` forces removal without prompting for confirmation in normal cases and suppresses many errors, such as those involving nonexistent files.
+
+Together, these options can delete large numbers of files and entire directory trees without giving the user an opportunity to reconsider. If the path is incorrect, important data may be lost.
+
+Wildcards such as `*` and `*.txt` can match multiple filenames. For example, `rm *.txt` may delete every matching text file in the current directory, not just one intended file.
+
+To reduce risk, check the current directory with `pwd`, inspect its contents with `ls`, verify the target path, and use explicit filenames where practical. Avoid unnecessary use of `-f`, and inspect wildcard matches before deleting anything.
