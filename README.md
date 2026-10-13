@@ -20,7 +20,7 @@ The goal is not just to learn commands or complete tutorials, but to develop pra
 ## Repository Structure
 
 ```text
-engineering-lab/
+LINUX-Systems-Troubleshooting/
 ├── README.md
 ├── .gitignore
 ├── docs/
