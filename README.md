@@ -27,7 +27,6 @@ LINUX-Systems-Troubleshooting/
 │   ├── setup.md
 ├── linux/
 │   ├── week-01/
-│   │   ├── README.md
 │   │   ├── lab-notes.pdf
 │   │   └── assignments/
 │   ├── week-02/
