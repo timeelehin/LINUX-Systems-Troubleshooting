@@ -25,7 +25,6 @@ LINUX-Systems-Troubleshooting/
 ├── .gitignore
 ├── docs/
 │   ├── setup.md
-│   └── learning-roadmap.md
 ├── linux/
 │   ├── week-01/
 │   │   ├── README.md
