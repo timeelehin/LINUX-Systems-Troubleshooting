@@ -1,0 +1,241 @@
+# Linux Files Lab — Assignment 3
+
+## Terminal Practice Log
+
+```bash
+timi@timi-QEMU-Virtual-Machine:~/reading-files-lab$ less.server.log
+less.server.log: command not found
+
+timi@timi-QEMU-Virtual-Machine:~/reading-files-lab$ less server.log
+
+timi@timi-QEMU-Virtual-Machine:~/reading-files-lab$ touch live.log
+
+timi@timi-QEMU-Virtual-Machine:~/reading-files-lab$ tail -f live.log
+INFO: Network initialized
+WARNING: High memory usage
+ERROR: Database timeout
+INFO: Database recovered
+INFO: Network initialized
+WARNING: High memory usage
+ERROR: Database timeout
+INFO: Database recovered
+
+^C
+
+timi@timi-QEMU-Virtual-Machine:~/reading-files-lab$ echo "Hello from the other side!" >> logs/application.log
+```
+
+## Review Questions
+
+1. I would use cat config.txt instead of less config.txt if the file isn’t a lot, just a few lines, something that can be viewed at a glance.
+
+2. Less is useful for large files because of pagination. It doesn’t load the entire file into memory, and only does it in chunks.
+
+3. The difference between head file and tail file is that head file only shows the first 10 lines of the file and tail shows the last 10.
+
+4. The tail -f command allows you to follow the changes in another file. It allows you to see the changes in a file as they happen.
+
+5. The tail-f command is particularly useful for system administration, because like I earlier said, it allows the administrator to follow changes being made to a file, so you get to see live updates as they are being changed in realtime.
+
+6. Pressing q inside less ends the pagination command and returns the administrator back to the prompt screen on the terminal.
+
+7. Pressing control C while tail-f is working ends the following operation.
+
+8. I make use of head -n 20 \<file-name>
+
+9. To search interactively, I make use of the /pattern command in less.
+
+10. Make use of tail -f.
+
+## Assignment 3.1: Build and Inspect a Mini Server
+
+### Directory Structure
+
+```text
+reading-files-lab/
+├── configs/
+│   ├── server.conf
+│   └── network.conf
+├── logs/
+│   ├── application.log
+│   └── system.log
+└── reports/
+    └── status.txt
+```
+
+Populate the files so that server.conf has 5 lines, network.conf 10, application.log 50, system.log 100, and status.txt 3. Then record the command you used for each task:
+
+### 1. Display server.conf completely.
+
+```bash
+cat configs/server.conf
+```
+
+### 2. Display only the first 3 lines of network.conf.
+
+```bash
+head -n 3 configs/network.conf
+```
+
+### 3. Display only the last 5 lines of application.log.
+
+```bash
+tail -n 5 logs/application.log
+```
+
+### 4. Open system.log in an interactive viewer and go to the beginning, the end, and a specific search result.
+
+```bash
+less logs/system.log
+```
+
+### 5. Monitor application.log in real time while appending new entries from another terminal.
+
+```bash
+tail -f logs/application.log
+```
+
+In another terminal:
+
+```bash
+echo "Hello from the other side!" >> logs/application.log
+```
+
+## Assignment 3.2: Diagnose without cat
+
+Imagine application.log has 100,000 lines and the problem happened recently. You must see the latest entries, search the file, and watch for new entries while you reproduce the problem. Design the workflow using only head, tail, and less, and explain why each tool is the right choice at each step.
+
+### Commands Practised
+
+```bash
+cat head -n 3 server.log tail -n 2 server.log
+
+head -n 3 server.log
+
+tail -n 2 server.log
+
+less /etc/passwdd
+
+less /etc/passwd
+
+head -n 20 large-files.txt | wc -l
+
+ls
+
+head -n 20 oarge-file.txt | wc -l
+
+head -n 20 large-file.txt | wc -l
+```
+
+### Creating Directories and Files
+
+```bash
+mkdir configs logs reports
+
+cd config
+
+cd configs
+
+touch server.conf network.conf
+
+cd ..
+
+cd logs
+
+touch application.log system.log
+
+cd ../reports
+
+touch status.txt
+
+cd ..
+```
+
+### Creating server.conf
+
+```bash
+cat > configs/server.conf << 'EOF'
+hostname = lab_server
+port = 8080
+environment = development
+max_connections = 100
+service_status = active
+EOF
+
+cat configs/server.conf
+
+wc -l configs/server.conf
+
+cat configs/server.conf | wc -l
+```
+
+### Creating network.conf
+
+```bash
+cat > configs/network.conf << 'EOF'
+interface=eth0
+ip_address=192.168.1.10
+subnet_mask=255.255.255.0
+gateway=192.168.1.1
+dns_primary=8.8.8.8
+dns_secondary=1.1.1.1
+protocol=TCP
+ssh_port=22
+http_port=80
+https_port=443
+EOF
+
+head -n 3 configs/network.conf
+
+head -n 3 configs/network.conf | wc -l
+```
+
+### Generating application.log
+
+```bash
+for i in $(seq 1..50); do
+    echo "INFO: Application Event $i" >> logs/application.log
+done
+
+for i in $(seq 1 50); do echo "INFO: Application Event $i" >> logs/application.log; done
+
+wc -l application.log
+
+wc -l logs/application.log
+```
+
+### Generating system.log
+
+```bash
+for i in $(seq 1 100)
+do echo "SYSTEM: Event $i" >> logs/system.log
+done
+
+wc -l logs/system.log
+```
+
+### Creating status.txt
+
+```bash
+cat > reports/status.txt << 'EOF'
+Server status: Operational
+Network status: Connected
+Application status: Running
+EOF
+```
+
+### Inspecting Files and Logs
+
+```bash
+find . -type f
+
+tail -n 5 application.log
+
+tail -n 5 ./application.log
+
+tail -n 5 logs/application.log
+
+less logs/system.log
+
+tail -f logs/application.log
+```
